@@ -6,7 +6,8 @@
             <div class="col-md-offset-2 col-md-8"></div>
             <h1>Departments List</h1>
             <a href="DepartmentDetails.aspx" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Add Department</a>
-            <asp:GridView runat="server" CssClass="table table-bordered table-striped table-hover" ID="DepartmentsGridView" AutoGenerateColumns="false">
+            <asp:GridView runat="server" CssClass="table table-bordered table-striped table-hover" ID="DepartmentsGridView" 
+                AutoGenerateColumns="false" DataKeyNames="DepartmentID" OnRowDeleting="DepartmentsGridView_RowDeleting" AllowPaging="true" PageSize="3" OnPageIndexChanging="DepartmentsGridView_PageIndexChanging">
                 <Columns>
                      <asp:BoundField runat="Server" DataField="DepartmentID" HeaderText="Department ID" Visible="true" />
                      <asp:BoundField runat="Server" DataField="Name" HeaderText="Department Name" Visible="true" />

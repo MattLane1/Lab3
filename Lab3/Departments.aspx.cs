@@ -41,5 +41,43 @@ namespace Lab3
                 DepartmentsGridView.DataBind();
             }
         }
+
+        protected void DepartmentsGridView_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            // Store which row was clicked
+            int selectedRow = e.RowIndex;
+
+            //Get the selected ID
+            int selectedID = Convert.ToInt32(DepartmentsGridView.DataKeys[selectedRow].Values["DepartmentID"]);
+
+            //Use EF to find the selected student in the DB and remove it
+            using (DefaultConnection db = new DefaultConnection())
+            {//Create object opf student class and store the query string 
+                Department deletedDepartment = (from departmentRecords in db.Departments
+                                          where departmentRecords.DepartmentID == selectedID
+                                          select departmentRecords).FirstOrDefault();
+
+                //Remove the selected Student from DB
+                db.Departments.Remove(deletedDepartment);
+
+                //Save the changes to the database
+                db.SaveChanges();
+
+                //Refresh the grid
+                this.GetDepartments();
+            }
+        }
+
+        /*
+       * This event allows paging for the Departments Page
+       */
+        protected void DepartmentsGridView_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            // Set the new page number
+            DepartmentsGridView.PageIndex = e.NewPageIndex;
+
+            // Refresh the grid
+            this.GetDepartments();
+        }
     }
 }
