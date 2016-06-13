@@ -13,11 +13,11 @@
                     <div class="panel-heading">Contact Info</div>
                     <div class="panel-body">
                         <address>
-                            <strong>Tom Tsiliopoulos</strong><br>
-                            1 Toronto Street<br>
-                            Barrie, ON L9L 9L9<br>
+                            <strong>Matthew Lane</strong><br>
+                            10 Toronto Street<br>
+                            Barrie, ON L4M 3R8<br>
                             <abbr title="Phone">TEL:</abbr>
-                            (705) 555-6666
+                            (705) 555-5555
                         </address>
                     </div>
                 </div>
