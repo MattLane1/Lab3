@@ -8,10 +8,6 @@
                 <h5>All fields are required</h5>
                 <br />
                 <div class="form-group">
-                      <label class="control-label" for="DepartmentIDTextBox">Department ID</label>
-                    <asp:TextBox  runat="server" CssClass="form-control" ID="DepartmentIDTextBox" placeholder="Department ID" required="true"></asp:TextBox>
-                </div>
-                <div class="form-group">
                     <label class="control-label" for="DepartmentNameTextBox">Department Name</label>
                     <asp:TextBox  runat="server" CssClass="form-control" ID="DepartmentNameTextBox" placeholder="Department Name" required="true"></asp:TextBox>
                  </div>

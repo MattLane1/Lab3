@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 // Using statements that are required to connect top EF database
 using Lab3.Models;
 using System.Web.ModelBinding;
+using System.Linq.Dynamic;
 
 namespace Lab3
 {
@@ -18,6 +19,8 @@ namespace Lab3
             //If loading page first time populate the grid
             if (!IsPostBack)
             {
+                Session["SortColumn"] = "DepartmentID"; // default sort column
+                Session["SortDirection"] = "ASC";
                 //Get Student Data
                 this.GetDepartments();
             }
@@ -25,19 +28,21 @@ namespace Lab3
 
         /**
          * This method gets the department data from the database
-         * @method GetStudents 
+         * @method GetDepartments
         */
         protected void GetDepartments()
         {
             //connect to EF
             using (DefaultConnection db = new DefaultConnection())
             {
-                //query the students table using EF and LINQ
+                string SortString = Session["SortColumn"].ToString() + " " + Session["SortDirection"].ToString();
+
+                //query the Departments table using EF and LINQ
                 var Departments = (from allDepartments in db.Departments
                                    select allDepartments);
 
                 //bind the result to the GridView
-                DepartmentsGridView.DataSource = Departments.ToList();
+                DepartmentsGridView.DataSource = Departments.AsQueryable().OrderBy(SortString).ToList();
                 DepartmentsGridView.DataBind();
             }
         }
@@ -50,14 +55,14 @@ namespace Lab3
             //Get the selected ID
             int selectedID = Convert.ToInt32(DepartmentsGridView.DataKeys[selectedRow].Values["DepartmentID"]);
 
-            //Use EF to find the selected student in the DB and remove it
+            //Use EF to find the selected Departments in the DB and remove it
             using (DefaultConnection db = new DefaultConnection())
-            {//Create object opf student class and store the query string 
+            {//Create object opf Departments class and store the query string 
                 Department deletedDepartment = (from departmentRecords in db.Departments
                                           where departmentRecords.DepartmentID == selectedID
                                           select departmentRecords).FirstOrDefault();
 
-                //Remove the selected Student from DB
+                //Remove the selected Departments from DB
                 db.Departments.Remove(deletedDepartment);
 
                 //Save the changes to the database
@@ -78,6 +83,54 @@ namespace Lab3
 
             // Refresh the grid
             this.GetDepartments();
+        }
+
+        protected void PageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Set the new Page size
+            DepartmentsGridView.PageSize = Convert.ToInt32(PageSizeDropDownList.SelectedValue);
+
+            this.GetDepartments();
+        }
+
+        protected void DepartmentsGridView_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            // get the column to sorty by
+            Session["SortColumn"] = e.SortExpression;
+
+            // Refresh the Grid
+            this.GetDepartments();
+
+            // toggle the direction
+            Session["SortDirection"] = Session["SortDirection"].ToString() == "ASC" ? "DESC" : "ASC";
+        }
+
+        protected void DepartmentsGridView_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (IsPostBack)
+            {
+                if (e.Row.RowType == DataControlRowType.Header) // if header row has been clicked
+                {
+                    LinkButton linkbutton = new LinkButton();
+
+                    for (int index = 0; index < DepartmentsGridView.Columns.Count - 1; index++)
+                    {
+                        if (DepartmentsGridView.Columns[index].SortExpression == Session["SortColumn"].ToString())
+                        {
+                            if (Session["SortDirection"].ToString() == "ASC")
+                            {
+                                linkbutton.Text = " <i class='fa fa-caret-up fa-lg'></i>";
+                            }
+                            else
+                            {
+                                linkbutton.Text = " <i class='fa fa-caret-down fa-lg'></i>";
+                            }
+
+                            e.Row.Cells[index].Controls.Add(linkbutton);
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -26,25 +26,42 @@ namespace Lab3
 
         protected void SaveButton_Click(object sender, EventArgs e)
         {
-            //Use EF to connect to the server
+            // Use EF to connect to the server
             using (DefaultConnection db = new DefaultConnection())
             {
-                // Use the student model to create a new student object and save the new record
+                // use the Student model to create a new student object and
+                // save a new record
                 Student newStudent = new Student();
 
-                // add data to the new student record
+                int StudentID = 0;
+
+                if (Request.QueryString.Count > 0) // our URL has a StudentID in it
+                {
+                    // get the id from the URL
+                    StudentID = Convert.ToInt32(Request.QueryString["StudentID"]);
+
+                    // get the current student from EF DB
+                    newStudent = (from student in db.Students
+                                  where student.StudentID == StudentID
+                                  select student).FirstOrDefault();
+                }
+
+                // add form data to the new student record
                 newStudent.LastName = LastNameTextBox.Text;
                 newStudent.FirstMidName = FirstNameTextBox.Text;
                 newStudent.EnrollmentDate = Convert.ToDateTime(EnrollmentDateTextBox.Text);
 
-                // use LINQ and ADO.NET to add a student into the database
-                db.Students.Add(newStudent);
+                // use LINQ to ADO.NET to add / insert new student into the database
 
-                //Save changes
+                if (StudentID == 0)
+                {
+                    db.Students.Add(newStudent);
+                }
+                // save our changes - also updates and inserts
                 db.SaveChanges();
 
-                //Redirect back to the updated students page
-                Response.Redirect("~/Students.aspx");
+                // Redirect back to the updated students page
+                Response.Redirect("Students.aspx");
             }
         }
     }
