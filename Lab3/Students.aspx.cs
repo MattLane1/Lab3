@@ -90,5 +90,13 @@ namespace Lab3
             // Refresh the grid
             this.GetStudents();
         }
+
+        protected void PageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Set the new Page size
+            StudentsGridView.PageSize = Convert.ToInt32(PageSizeDropDownList.SelectedValue);
+
+            this.GetStudents();
+        }
     }
 }

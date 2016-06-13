@@ -21,7 +21,7 @@ namespace Lab3
         protected void CancelButton_Click(object sender, EventArgs e)
         {
             //Redirect back to Students page
-            Response.Redirect("~Students.aspx");
+            Response.Redirect("Students.aspx");
         }
 
         protected void SaveButton_Click(object sender, EventArgs e)
