@@ -76,7 +76,10 @@ namespace Lab3
                 newDepartment.Budget = Convert.ToInt32(DepartmentBudgetTextBox.Text);
 
                 // use LINQ to ADO.NET to add / insert new student into the database
-
+                if (DepartmentID == 0)
+                {
+                    db.Departments.Add(newDepartment);
+                }
 
                 // save our changes - also updates and inserts
                 db.SaveChanges();
